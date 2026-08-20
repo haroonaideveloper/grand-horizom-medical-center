@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMBRE NOIR — Maison de Parfum</title>
+<meta name="description" content="AMBRE NOIR — contemporary niche perfumery.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --ink:#0E0C0B; --ink-soft:#2A2521;
+  --ivory:#F5EFE4; --ivory-dim:#E7DCC7;
+  --gold:#C6A15B; --gold-bright:#DDB96E;
+  --wine:#4A1620; --sage:#6E7B62;
+  --ok:#4C7A5B; --danger:#B23A3A;
+  --font-display:'Playfair Display', serif;
+  --font-body:'Jost', sans-serif;
+  --maxw:1320px; --radius:2px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-body);background:var(--ivory);color:var(--ink);-webkit-font-smoothing:antialiased;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+input,select,textarea{font-family:inherit;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+h1,h2,h3{font-family:var(--font-display);letter-spacing:.01em;line-height:1.05;}
+.eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:500;}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+header.site{position:sticky;top:0;z-index:40;background:rgba(245,239,228,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--ivory-dim);}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;gap:16px;}
+.logo{font-family:var(--font-display);font-size:24px;letter-spacing:.14em;font-weight:700;}
+.navlinks{display:flex;gap:30px;list-style:none;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;}
+.navlinks a{position:relative;padding:4px 0;}
+.navlinks a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);transition:width .25s;}
+.navlinks a:hover::after{width:100%;}
+.navtools{display:flex;align-items:center;gap:14px;}
+.lang-select{border:1px solid var(--ink-soft);background:none;padding:7px 10px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;}
+.icon-btn{position:relative;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .2s;}
+.icon-btn:hover{background:var(--ivory-dim);}
+.icon-btn svg{width:18px;height:18px;stroke:var(--ink);fill:none;stroke-width:1.4;}
+.badge{position:absolute;top:-2px;right:-2px;background:var(--wine);color:#fff;font-size:10px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.badge:empty{display:none;}
+
+.hero{position:relative;min-height:74vh;display:flex;align-items:flex-end;
+  background:linear-gradient(180deg,rgba(14,12,11,.2),rgba(14,12,11,.82)), url('https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=1600&auto=format&fit=crop') center/cover;
+  color:var(--ivory);padding:80px 24px 64px;}
+.hero__inner{max-width:var(--maxw);margin:0 auto;width:100%;}
+.hero h1{font-size:clamp(42px,7vw,88px);color:var(--ivory);font-style:italic;font-weight:500;}
+.hero p{max-width:440px;margin-top:16px;font-size:15px;line-height:1.7;color:var(--ivory-dim);}
+.hero__cta{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 30px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;border-radius:var(--radius);transition:transform .18s,background .18s,color .18s;}
+.btn-gold{background:var(--gold);color:var(--ink);}
+.btn-gold:hover{background:var(--gold-bright);transform:translateY(-2px);}
+.btn-outline{border:1px solid rgba(245,239,228,.5);color:var(--ivory);}
+.btn-outline:hover{background:rgba(245,239,228,.1);}
+.btn-dark{background:var(--ink);color:var(--ivory);}
+.btn-dark:hover{background:var(--ink-soft);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+
+.trust{background:var(--ink);color:var(--ivory-dim);padding:20px 0;}
+.trust .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:500;}
+
+.section{padding:60px 24px;}
+.section__head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:26px;flex-wrap:wrap;gap:14px;}
+.section__head h2{font-size:clamp(28px,4vw,42px);font-style:italic;}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px;}
+.chip{padding:9px 20px;border:1px solid var(--ink);border-radius:999px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;transition:all .18s;}
+.chip:hover,.chip.active{background:var(--ink);color:var(--ivory);}
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;margin-bottom:26px;}
+.searchbox{display:flex;align-items:center;gap:8px;border:1px solid var(--ink);padding:10px 16px;flex:1;min-width:220px;max-width:400px;background:#fff;}
+.searchbox svg{width:15px;height:15px;stroke:var(--ink-soft);fill:none;stroke-width:1.6;}
+.searchbox input{border:none;outline:none;background:none;width:100%;font-size:13px;}
+.sortbox select{border:1px solid var(--ink);padding:10px 14px;background:#fff;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px;}
+.card{position:relative;background:#fff;}
+.card__imgwrap{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--ivory-dim);}
+.card__imgwrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+.card:hover .card__imgwrap img{transform:scale(1.05);}
+.card__badge{position:absolute;top:10px;left:10px;background:var(--wine);color:#fff;font-size:10.5px;font-weight:600;padding:4px 9px;}
+.card__wish{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;}
+.card__wish svg{width:15px;height:15px;stroke:var(--ink);fill:none;stroke-width:1.5;}
+.card__wish.active svg{fill:var(--wine);stroke:var(--wine);}
+.card__soldout{position:absolute;inset:0;background:rgba(14,12,11,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+.card__body{padding:16px 4px;}
+.card__cat{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);font-weight:500;}
+.card__name{font-family:var(--font-display);font-size:16px;margin:5px 0 6px;cursor:pointer;}
+.card__price{display:flex;align-items:center;gap:8px;font-size:14px;}
+.card__price .now{font-weight:600;}
+.card__price .was{text-decoration:line-through;color:var(--sage);font-size:12px;}
+.card__price .off{color:var(--wine);font-weight:600;font-size:11.5px;}
+.card__add{width:100%;margin-top:10px;padding:11px;border:1px solid var(--ink);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;transition:background .18s,color .18s;}
+.card__add:hover:not(:disabled){background:var(--ink);color:var(--ivory);}
+.empty{padding:60px 20px;text-align:center;color:var(--sage);font-size:14px;grid-column:1/-1;}
+
+.overlay{position:fixed;inset:0;background:rgba(14,12,11,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+.overlay.open{opacity:1;pointer-events:auto;}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);background:var(--ivory);z-index:70;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+.drawer.open{transform:translateX(0);}
+.drawer__head{display:flex;justify-content:space-between;align-items:center;padding:20px;border-bottom:1px solid var(--ivory-dim);}
+.drawer__head h3{font-size:22px;font-style:italic;}
+.closer{width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
+.closer svg{width:17px;height:17px;stroke:var(--ink);stroke-width:1.5;}
+
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-46%);background:#fff;z-index:80;width:min(900px,94vw);max-height:88vh;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;}
+.modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%);}
+.modal--sm{width:min(440px,94vw);}
+
+.cart-items{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:16px;}
+.cart-item{display:flex;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--ivory-dim);}
+.cart-item img{width:70px;height:88px;object-fit:cover;flex-shrink:0;}
+.cart-item__info{flex:1;font-size:13px;}
+.cart-item__name{font-weight:600;margin-bottom:2px;font-family:var(--font-display);}
+.cart-item__meta{color:var(--sage);font-size:11px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em;}
+.qty-ctrl{display:flex;align-items:center;border:1px solid var(--ink);width:fit-content;}
+.qty-ctrl button{width:26px;height:26px;font-size:14px;}
+.qty-ctrl span{min-width:26px;text-align:center;font-size:12px;font-weight:600;}
+.cart-item__foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.cart-item__price{font-weight:600;font-size:13px;}
+.remove-link{font-size:11px;color:var(--danger);text-decoration:underline;text-transform:uppercase;letter-spacing:.05em;}
+.drawer__foot{padding:20px;border-top:1px solid var(--ivory-dim);}
+.subtotal-row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:12px;font-weight:500;}
+
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:6px;color:var(--sage);}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1px solid var(--ivory-dim);background:#fff;font-size:14px;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink);}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pay-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.pay-opt{border:1px solid var(--ivory-dim);padding:16px;text-align:center;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.pay-opt.selected{border-color:var(--ink);background:var(--ivory);}
+.pay-opt small{display:block;font-weight:400;text-transform:none;letter-spacing:0;font-size:10.5px;margin-top:4px;color:var(--sage);}
+
+.pmodal{display:grid;grid-template-columns:1fr 1fr;}
+@media(max-width:720px){.pmodal{grid-template-columns:1fr;}}
+.pmodal__gallery{background:var(--ivory-dim);aspect-ratio:3/4;}
+.pmodal__gallery img{width:100%;height:100%;object-fit:cover;}
+.pmodal__info{padding:32px;}
+.pmodal__cat{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);font-weight:600;}
+.pmodal__name{font-size:30px;margin:6px 0 8px;font-style:italic;}
+.pmodal__price{font-size:19px;font-weight:600;margin-bottom:12px;}
+.pmodal__notes{font-size:12.5px;line-height:1.8;color:var(--ink-soft);margin-bottom:14px;}
+.pmodal__notes b{color:var(--ink);}
+.pmodal__desc{font-size:13px;line-height:1.7;color:var(--ink-soft);margin-bottom:18px;}
+.swatch-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.swatch{padding:8px 14px;border:1px solid var(--ink);font-size:11.5px;font-weight:600;}
+.swatch.selected{background:var(--ink);color:#fff;}
+.stock-line{font-size:11.5px;margin-bottom:14px;font-weight:600;}
+.stock-line.low{color:var(--wine);}
+.stock-line.ok{color:var(--ok);}
+.stock-line.out{color:var(--danger);}
+
+footer.site{background:var(--ink);color:var(--ivory-dim);padding:52px 24px 26px;}
+.footgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:32px;}
+@media(max-width:720px){.footgrid{grid-template-columns:1fr 1fr;}}
+.footgrid h4{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ivory);margin-bottom:14px;}
+.footgrid ul{list-style:none;display:flex;flex-direction:column;gap:9px;font-size:13px;}
+.footbottom{border-top:1px solid var(--ink-soft);padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--sage);}
+
+.auth-tabs{display:flex;border-bottom:1px solid var(--ivory-dim);margin-bottom:20px;}
+.auth-tabs button{flex:1;padding:12px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--sage);border-bottom:2px solid transparent;}
+.auth-tabs button.active{color:var(--ink);border-color:var(--gold);}
+.modal__pad{padding:28px;}
+.modal__close-abs{position:absolute;top:14px;right:14px;}
+.helper-text{font-size:11.5px;color:var(--sage);margin-top:-6px;margin-bottom:14px;}
+.msg-banner{font-size:12.5px;padding:10px 12px;margin-bottom:14px;}
+.msg-banner.err{background:#FBE9E9;color:var(--danger);}
+.msg-banner.ok{background:#E9F0EA;color:var(--ok);}
+
+.order-row{border:1px solid var(--ivory-dim);padding:16px;margin-bottom:12px;background:#fff;}
+.order-row__top{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;}
+.status-pill{padding:3px 10px;border-radius:999px;font-size:10px;text-transform:uppercase;font-weight:700;letter-spacing:.04em;}
+.status-pill.placed{background:#EAE6F5;color:#5C4A9E;}
+.status-pill.processing{background:#FFF3D6;color:#946A00;}
+.status-pill.shipped{background:#DCEBFB;color:#1A5FA8;}
+.status-pill.delivered{background:#E7F3ED;color:var(--ok);}
+.status-pill.cancelled{background:#FBE9E9;color:var(--danger);}
+.confirm-num{font-family:var(--font-display);font-size:36px;font-style:italic;color:var(--wine);margin:14px 0;}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.skeleton{background:linear-gradient(90deg,var(--ivory-dim) 25%,#fff 37%,var(--ivory-dim) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite;}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+.welcome-modal .modal__pad{text-align:center;padding:44px 32px;}
+.welcome-modal h2{font-size:32px;font-style:italic;margin-bottom:10px;}
+.welcome-modal p{font-size:13.5px;color:var(--ink-soft);line-height:1.7;margin-bottom:22px;}
+.file-drop{border:1px dashed var(--ink-soft);padding:18px;text-align:center;font-size:12px;color:var(--sage);cursor:pointer;margin-bottom:14px;}
+.file-drop.has-file{border-color:var(--ok);color:var(--ok);}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav class="nav wrap">
+    <a href="#home" class="logo">AMBRE NOIR</a>
+    <ul class="navlinks">
+      <li><a href="#shop" data-i18n="nav_shop">Shop</a></li>
+      <li><a href="#categories" data-i18n="nav_categories">Categories</a></li>
+      <li><a href="#about" data-i18n="nav_about">Maison</a></li>
+      <li><a href="#" id="navOrders" data-i18n="nav_orders">My Orders</a></li>
+    </ul>
+    <div class="navtools">
+      <select class="lang-select" id="langSelect">
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="it">IT</option>
+        <option value="es">ES</option>
+        <option value="de">DE</option>
+        <option value="sl">SL</option>
+        <option value="pt">PT</option>
+        <option value="nl">NL</option>
+        <option value="pl">PL</option>
+        <option value="ru">RU</option>
+      </select>
+      <button class="icon-btn" id="btnAccount" aria-label="Account">
+        <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg>
+      </button>
+      <button class="icon-btn" id="btnWishlistNav" aria-label="Wishlist">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.4-9.5-9C.6 8.3 2 4.5 6 4c2-.2 3.6.8 4.5 2 .9-1.2 2.5-2.2 4.5-2 4 .5 5.4 4.3 3.5 8-2.5 4.6-9.5 9-9.5 9z"/></svg>
+        <span class="badge" id="wishBadge"></span>
+      </button>
+      <button class="icon-btn" id="btnCart" aria-label="Cart">
+        <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4.5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span class="badge" id="cartBadge"></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero__inner">
+    <p class="eyebrow" data-i18n="hero_eyebrow">New Collection — L'Extrait</p>
+    <h1 data-i18n="hero_title">A scent<br>you don't wear.<br>You become it.</h1>
+    <p data-i18n="hero_desc">Rare ingredients, composed in small batches. Discover fragrances built to last from morning into memory.</p>
+    <div class="hero__cta">
+      <a href="#shop" class="btn btn-gold" data-i18n="hero_cta">Shop The Collection</a>
+      <a href="#categories" class="btn btn-outline" data-i18n="hero_cta2">Explore Categories</a>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="wrap">
+    <span data-i18n="trust_1">Complimentary shipping over $120</span>
+    <span data-i18n="trust_2">100% authentic, sourced direct</span>
+    <span data-i18n="trust_3">7-day return policy</span>
+    <span data-i18n="trust_4">Secure checkout via Stripe</span>
+  </div>
+</section>
+
+<section class="section" id="categories" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="section__head"><h2 data-i18n="cat_title">Shop by Category</h2></div>
+    <div class="filters" id="categoryFilters">
+      <button class="chip active" data-cat="All" data-i18n="cat_all">All</button>
+      <button class="chip" data-cat="Women" data-i18n="cat_women">Women</button>
+      <button class="chip" data-cat="Men" data-i18n="cat_men">Men</button>
+      <button class="chip" data-cat="Unisex" data-i18n="cat_unisex">Unisex</button>
+      <button class="chip" data-cat="Niche" data-i18n="cat_niche">Niche</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="shop">
+  <div class="wrap">
+    <div class="section__head"><h2 data-i18n="shop_title">The Collection</h2></div>
+    <div class="toolbar">
+      <div class="searchbox">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" data-i18n-placeholder="search_placeholder" placeholder="Search fragrances…">
+      </div>
+      <div class="sortbox">
+        <select id="sortSelect">
+          <option value="newest" data-i18n="sort_newest">Newest</option>
+          <option value="price-asc" data-i18n="sort_price_asc">Price: Low to High</option>
+          <option value="price-desc" data-i18n="sort_price_desc">Price: High to Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid" id="productGrid">
+      <div class="card"><div class="card__imgwrap skeleton"></div></div>
+      <div class="card"><div class="card__imgwrap skeleton"></div></div>
+      <div class="card"><div class="card__imgwrap skeleton"></div></div>
+      <div class="card"><div class="card__imgwrap skeleton"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about" style="background:var(--ink);color:var(--ivory)">
+  <div class="wrap" style="max-width:720px">
+    <p class="eyebrow">The Maison</p>
+    <h2 style="margin:10px 0 16px;color:var(--ivory);font-style:italic" data-i18n="about_title">Composed, not manufactured</h2>
+    <p style="font-size:14px;line-height:1.9;color:var(--ivory-dim)" data-i18n="about_desc">AMBRE NOIR works with a small circle of perfumers to create fragrances in limited runs — never mass-produced, never diluted for shelf life. Every bottle is numbered.</p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="footgrid">
+      <div>
+        <div class="logo" style="color:var(--ivory);margin-bottom:12px">AMBRE NOIR</div>
+        <p style="font-size:13px;line-height:1.7;max-width:280px;color:var(--sage)">Niche perfumery, composed in small batches.</p>
+      </div>
+      <div><h4 data-i18n="foot_shop">Shop</h4><ul><li><a href="#shop" data-i18n="nav_shop">All Fragrances</a></li><li><a href="#categories" data-i18n="nav_categories">Categories</a></li></ul></div>
+      <div><h4 data-i18n="foot_support">Support</h4><ul><li><a href="#" id="footTrack" data-i18n="foot_track">Track Order</a></li><li><a href="#" id="footRefund" data-i18n="foot_refund">Refunds</a></li></ul></div>
+      <div><h4 data-i18n="foot_contact">Contact</h4><ul><li>concierge@ambrenoir.com</li></ul></div>
+    </div>
+    <div class="footbottom">
+      <span>© 2026 AMBRE NOIR. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="cartOverlay"></div>
+<div class="drawer" id="cartDrawer">
+  <div class="drawer__head"><h3 data-i18n="cart_title">Your Bag</h3><button class="closer" id="cartClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg></button></div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="drawer__foot">
+    <div class="subtotal-row"><span data-i18n="subtotal">Subtotal</span><span id="cartSubtotal">$0.00</span></div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center" id="btnCheckout" data-i18n="checkout">Checkout</button>
+  </div>
+</div>
+
+<!-- WISHLIST DRAWER -->
+<div class="overlay" id="wishOverlay"></div>
+<div class="drawer" id="wishDrawer">
+  <div class="drawer__head"><h3 data-i18n="wishlist_title">Wishlist</h3><button class="closer" id="wishClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg></button></div>
+  <div class="cart-items" id="wishItems"></div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="overlay" id="productOverlay"></div>
+<div class="modal" id="productModal">
+  <button class="closer modal__close-abs" id="productClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg></button>
+  <div class="pmodal" id="pmodalContent"></div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="overlay" id="checkoutOverlay"></div>
+<div class="modal modal--sm" id="checkoutModal">
+  <button class="closer modal__close-abs" id="checkoutClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg></button>
+  <div class="modal__pad" id="checkoutBody"></div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="overlay" id="authOverlay"></div>
+<div class="modal modal--sm" id="authModal">
+  <button class="closer modal__close-abs" id="authClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg></button>
+  <div class="modal__pad">
+    <h2 style="font-size:28px;margin-bottom:18px;font-style:italic" data-i18n="account_title">Your Account</h2>
+    <div class="auth-tabs">
+      <button class="active" id="tabLogin" data-i18n="login">Log In</button>
+      <button id="tabSignup" data-i18n="signup">Sign Up</button>
+    </div>
+    <div id="authBanner"></div>
+    <div class="field" id="signupNameField" style="display:none">
+      <label data-i18n="full_name">Full Name</label>
+      <input type="text" id="authName" placeholder="Jane Doe">
+    </div>
+    <div class="field">
+      <label data-i18n="email_or_phone">Email or Phone Number</label>
+      <input type="text" id="authIdentifier" placeholder="you@email.com">
+    </div>
+    <div class="field" id="signupPhoneField" style="display:none">
+      <label data-i18n="phone_number">Phone Number</label>
+      <input type="tel" id="authPhone" placeholder="+1 555 000 0000">
+    </div>
+    <div class="field">
+      <label data-i18n="password">Password</label>
+      <input type="password" id="authPassword" placeholder="••••••••">
+    </div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center" id="authSubmit" data-i18n="login">Log In</button>
+  </div>
+</div>
+
+<!-- WELCOME MODAL -->
+<div class="overlay" id="welcomeOverlay"></div>
+<div class="modal modal--sm welcome-modal" id="welcomeModal">
+  <div class="modal__pad">
+    <p class="eyebrow" style="margin-bottom:10px">AMBRE NOIR</p>
+    <h2 data-i18n="welcome_title">Welcome to the Maison</h2>
+    <p data-i18n="welcome_desc">Your account is ready. Explore the collection, save your favorites, and track every order from here.</p>
+    <button class="btn btn-dark" style="width:100%;justify-content:center" id="welcomeDone" data-i18n="welcome_cta">Start Exploring</button>
+  </div>
+</div>
+
+<!-- ORDERS MODAL -->
+<div class="overlay" id="ordersOverlay"></div>
+<div class="modal" id="ordersModal">
+  <button class="closer modal__close-abs" id="ordersClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg></button>
+  <div class="modal__pad">
+    <h2 style="font-size:28px;margin-bottom:6px;font-style:italic" data-i18n="my_orders">My Orders</h2>
+    <p class="helper-text" id="ordersSubhead" data-i18n="orders_login_prompt">Log in to view your order history.</p>
+    <div id="ordersList"></div>
+  </div>
+</div>
+
+<!-- REFUND MODAL -->
+<div class="overlay" id="refundOverlay"></div>
+<div class="modal modal--sm" id="refundModal">
+  <button class="closer modal__close-abs" id="refundClose"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg></button>
+  <div class="modal__pad">
+    <h2 style="font-size:26px;margin-bottom:6px;font-style:italic" data-i18n="refund_title">Request a Refund</h2>
+    <p class="helper-text" data-i18n="refund_sub">We'll review and respond as soon as a team member is available.</p>
+    <div id="refundBanner"></div>
+    <div class="field"><label data-i18n="order_id">Order ID</label><input type="text" id="rfOrderId" placeholder="AN-XXXXXX"></div>
+    <div class="field"><label data-i18n="order_name">Order / Product Name</label><input type="text" id="rfOrderName" placeholder="e.g. Ambre Nocturne 50ml"></div>
+    <div class="field">
+      <label data-i18n="refund_type">Refund Type</label>
+      <select id="rfType">
+        <option value="damaged" data-i18n="rf_damaged">Item arrived damaged</option>
+        <option value="wrong_item" data-i18n="rf_wrong">Wrong item received</option>
+        <option value="changed_mind" data-i18n="rf_changed">Changed my mind</option>
+        <option value="other" data-i18n="rf_other">Other</option>
+      </select>
+    </div>
+    <div class="field"><label data-i18n="phone_number">Phone Number</label><input type="tel" id="rfPhone" placeholder="+1 555 000 0000"></div>
+    <div class="field"><label data-i18n="address">Address</label><textarea id="rfAddress" rows="2" placeholder="Pickup / return address"></textarea></div>
+    <label style="font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--sage);display:block;margin-bottom:6px" data-i18n="refund_photo">Photo of Item (optional)</label>
+    <div class="file-drop" id="rfDropZone" data-i18n="refund_photo_hint">Click to upload a photo</div>
+    <input type="file" id="rfPhoto" accept="image/*" style="display:none">
+    <button class="btn btn-dark" style="width:100%;justify-content:center;margin-top:8px" id="rfSubmit" data-i18n="submit_refund">Submit Request</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   AMBRE NOIR — Storefront Application Logic
+   ============================================================ */
+
+/* ---- Config (fetched at runtime, never hardcoded) ---- */
+let supabaseClient = null;
+let STRIPE_PUBLISHABLE_KEY = null;
+
+async function initConfig(){
+  try{
+    const res = await fetch("/api/config");
+    if(!res.ok) throw new Error("config endpoint returned " + res.status);
+    const cfg = await res.json();
+    if(cfg.supabaseUrl && cfg.supabaseAnonKey){
+      supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    } else {
+      console.warn("Supabase env vars not set in Vercel yet.");
+    }
+    STRIPE_PUBLISHABLE_KEY = cfg.stripePublishableKey || null;
+  }catch(e){
+    console.warn("Couldn't reach /api/config (expected if opening index.html directly instead of via Vercel):", e);
+  }
+}
+
+/* ---- Webhooks ----
+   Only login-signup was given explicitly. The others follow the same
+   automate.haroonai.com pattern as placeholders — update these to your
+   real n8n endpoints. */
+const WEBHOOKS = {
+  authWebhook:   "https://automate.haroonai.com/webhook-test/login-signup",
+  orderPlaced:   "https://automate.haroonai.com/webhook-test/order-placed",
+  paymentStatus: "https://automate.haroonai.com/webhook-test/payment-status",
+  refundRequest: "https://automate.haroonai.com/webhook-test/refund-request"
+};
+
+/* ---- i18n ---- */
+const I18N = {
+  en:{nav_shop:"Shop",nav_categories:"Categories",nav_about:"Maison",nav_orders:"My Orders",hero_eyebrow:"New Collection — L'Extrait",hero_title:"A scent<br>you don't wear.<br>You become it.",hero_desc:"Rare ingredients, composed in small batches. Discover fragrances built to last from morning into memory.",hero_cta:"Shop The Collection",hero_cta2:"Explore Categories",trust_1:"Complimentary shipping over $120",trust_2:"100% authentic, sourced direct",trust_3:"7-day return policy",trust_4:"Secure checkout via Stripe",cat_title:"Shop by Category",cat_all:"All",cat_women:"Women",cat_men:"Men",cat_unisex:"Unisex",cat_niche:"Niche",shop_title:"The Collection",search_placeholder:"Search fragrances…",sort_newest:"Newest",sort_price_asc:"Price: Low to High",sort_price_desc:"Price: High to Low",about_title:"Composed, not manufactured",about_desc:"AMBRE NOIR works with a small circle of perfumers to create fragrances in limited runs — never mass-produced, never diluted for shelf life. Every bottle is numbered.",foot_shop:"Shop",foot_support:"Support",foot_track:"Track Order",foot_refund:"Refunds",foot_contact:"Contact",cart_title:"Your Bag",subtotal:"Subtotal",checkout:"Checkout",wishlist_title:"Wishlist",account_title:"Your Account",login:"Log In",signup:"Sign Up",full_name:"Full Name",email_or_phone:"Email or Phone Number",phone_number:"Phone Number",password:"Password",welcome_title:"Welcome to the Maison",welcome_desc:"Your account is ready. Explore the collection, save your favorites, and track every order from here.",welcome_cta:"Start Exploring",my_orders:"My Orders",orders_login_prompt:"Log in to view your order history.",refund_title:"Request a Refund",refund_sub:"We'll review and respond as soon as a team member is available.",order_id:"Order ID",order_name:"Order / Product Name",refund_type:"Refund Type",rf_damaged:"Item arrived damaged",rf_wrong:"Wrong item received",rf_changed:"Changed my mind",rf_other:"Other",address:"Address",refund_photo:"Photo of Item (optional)",refund_photo_hint:"Click to upload a photo",submit_refund:"Submit Request"},
+  fr:{nav_shop:"Boutique",nav_categories:"Catégories",nav_about:"Maison",nav_orders:"Mes Commandes",hero_eyebrow:"Nouvelle Collection — L'Extrait",hero_title:"Un parfum<br>qu'on ne porte pas.<br>Qu'on devient.",hero_desc:"Ingrédients rares, composés en petites séries.",hero_cta:"Découvrir la Collection",hero_cta2:"Explorer les Catégories",trust_1:"Livraison offerte dès 120 $",trust_2:"100% authentique",trust_3:"Retours sous 7 jours",trust_4:"Paiement sécurisé via Stripe",cat_title:"Acheter par Catégorie",cat_all:"Tout",cat_women:"Femme",cat_men:"Homme",cat_unisex:"Mixte",cat_niche:"Niche",shop_title:"La Collection",search_placeholder:"Rechercher un parfum…",sort_newest:"Nouveautés",sort_price_asc:"Prix croissant",sort_price_desc:"Prix décroissant",about_title:"Composé, non fabriqué",about_desc:"AMBRE NOIR collabore avec un cercle restreint de parfumeurs.",foot_shop:"Boutique",foot_support:"Assistance",foot_track:"Suivre ma commande",foot_refund:"Remboursements",foot_contact:"Contact",cart_title:"Votre Panier",subtotal:"Sous-total",checkout:"Commander",wishlist_title:"Liste de souhaits",account_title:"Votre Compte",login:"Connexion",signup:"Inscription",full_name:"Nom complet",email_or_phone:"E-mail ou téléphone",phone_number:"Téléphone",password:"Mot de passe",welcome_title:"Bienvenue à la Maison",welcome_desc:"Votre compte est prêt.",welcome_cta:"Commencer",my_orders:"Mes Commandes",orders_login_prompt:"Connectez-vous pour voir vos commandes.",refund_title:"Demande de Remboursement",refund_sub:"Nous répondrons dès que possible.",order_id:"N° de commande",order_name:"Nom du produit",refund_type:"Type de remboursement",rf_damaged:"Article endommagé",rf_wrong:"Mauvais article reçu",rf_changed:"J'ai changé d'avis",rf_other:"Autre",address:"Adresse",refund_photo:"Photo (optionnel)",refund_photo_hint:"Cliquez pour ajouter une photo",submit_refund:"Envoyer la demande"},
+  it:{nav_shop:"Shop",nav_categories:"Categorie",nav_about:"Maison",nav_orders:"I Miei Ordini",hero_eyebrow:"Nuova Collezione — L'Extrait",hero_title:"Un profumo<br>che non si indossa.<br>Si diventa.",hero_desc:"Ingredienti rari, composti in piccoli lotti.",hero_cta:"Scopri la Collezione",hero_cta2:"Esplora le Categorie",trust_1:"Spedizione gratuita oltre $120",trust_2:"100% autentico",trust_3:"Reso entro 7 giorni",trust_4:"Pagamento sicuro con Stripe",cat_title:"Acquista per Categoria",cat_all:"Tutti",cat_women:"Donna",cat_men:"Uomo",cat_unisex:"Unisex",cat_niche:"Niche",shop_title:"La Collezione",search_placeholder:"Cerca un profumo…",sort_newest:"Novità",sort_price_asc:"Prezzo crescente",sort_price_desc:"Prezzo decrescente",about_title:"Composto, non prodotto in serie",about_desc:"AMBRE NOIR lavora con una cerchia ristretta di profumieri.",foot_shop:"Shop",foot_support:"Assistenza",foot_track:"Traccia Ordine",foot_refund:"Rimborsi",foot_contact:"Contatti",cart_title:"Il Tuo Carrello",subtotal:"Subtotale",checkout:"Checkout",wishlist_title:"Preferiti",account_title:"Il Tuo Account",login:"Accedi",signup:"Registrati",full_name:"Nome Completo",email_or_phone:"Email o telefono",phone_number:"Telefono",password:"Password",welcome_title:"Benvenuto nella Maison",welcome_desc:"Il tuo account è pronto.",welcome_cta:"Inizia",my_orders:"I Miei Ordini",orders_login_prompt:"Accedi per vedere i tuoi ordini.",refund_title:"Richiedi un Rimborso",refund_sub:"Risponderemo appena possibile.",order_id:"ID Ordine",order_name:"Nome Prodotto",refund_type:"Tipo di Rimborso",rf_damaged:"Articolo danneggiato",rf_wrong:"Articolo sbagliato",rf_changed:"Ho cambiato idea",rf_other:"Altro",address:"Indirizzo",refund_photo:"Foto (opzionale)",refund_photo_hint:"Clicca per caricare una foto",submit_refund:"Invia Richiesta"},
+  es:{nav_shop:"Tienda",nav_categories:"Categorías",nav_about:"Maison",nav_orders:"Mis Pedidos",hero_eyebrow:"Nueva Colección — L'Extrait",hero_title:"Un aroma<br>que no se lleva.<br>Se convierte en ti.",hero_desc:"Ingredientes raros, compuestos en lotes pequeños.",hero_cta:"Ver la Colección",hero_cta2:"Explorar Categorías",trust_1:"Envío gratis desde $120",trust_2:"100% auténtico",trust_3:"Devoluciones en 7 días",trust_4:"Pago seguro con Stripe",cat_title:"Comprar por Categoría",cat_all:"Todo",cat_women:"Mujer",cat_men:"Hombre",cat_unisex:"Unisex",cat_niche:"Nicho",shop_title:"La Colección",search_placeholder:"Buscar fragancia…",sort_newest:"Novedades",sort_price_asc:"Precio: menor a mayor",sort_price_desc:"Precio: mayor a menor",about_title:"Compuesto, no fabricado",about_desc:"AMBRE NOIR trabaja con un pequeño círculo de perfumistas.",foot_shop:"Tienda",foot_support:"Soporte",foot_track:"Rastrear Pedido",foot_refund:"Reembolsos",foot_contact:"Contacto",cart_title:"Tu Bolsa",subtotal:"Subtotal",checkout:"Pagar",wishlist_title:"Lista de Deseos",account_title:"Tu Cuenta",login:"Iniciar Sesión",signup:"Registrarse",full_name:"Nombre Completo",email_or_phone:"Email o teléfono",phone_number:"Teléfono",password:"Contraseña",welcome_title:"Bienvenido a la Maison",welcome_desc:"Tu cuenta está lista.",welcome_cta:"Comenzar",my_orders:"Mis Pedidos",orders_login_prompt:"Inicia sesión para ver tus pedidos.",refund_title:"Solicitar un Reembolso",refund_sub:"Responderemos en cuanto sea posible.",order_id:"ID de Pedido",order_name:"Nombre del Producto",refund_type:"Tipo de Reembolso",rf_damaged:"Artículo dañado",rf_wrong:"Artículo incorrecto",rf_changed:"Cambié de opinión",rf_other:"Otro",address:"Dirección",refund_photo:"Foto (opcional)",refund_photo_hint:"Haz clic para subir una foto",submit_refund:"Enviar Solicitud"},
+  de:{nav_shop:"Shop",nav_categories:"Kategorien",nav_about:"Maison",nav_orders:"Meine Bestellungen",hero_eyebrow:"Neue Kollektion — L'Extrait",hero_title:"Ein Duft,<br>den man nicht trägt.<br>Man wird zu ihm.",hero_desc:"Seltene Zutaten, in kleinen Chargen komponiert.",hero_cta:"Kollektion Entdecken",hero_cta2:"Kategorien Erkunden",trust_1:"Kostenloser Versand ab $120",trust_2:"100% authentisch",trust_3:"7 Tage Rückgaberecht",trust_4:"Sichere Zahlung via Stripe",cat_title:"Nach Kategorie Einkaufen",cat_all:"Alle",cat_women:"Damen",cat_men:"Herren",cat_unisex:"Unisex",cat_niche:"Nische",shop_title:"Die Kollektion",search_placeholder:"Duft suchen…",sort_newest:"Neuheiten",sort_price_asc:"Preis aufsteigend",sort_price_desc:"Preis absteigend",about_title:"Komponiert, nicht produziert",about_desc:"AMBRE NOIR arbeitet mit einem kleinen Kreis von Parfümeuren.",foot_shop:"Shop",foot_support:"Support",foot_track:"Bestellung Verfolgen",foot_refund:"Rückerstattungen",foot_contact:"Kontakt",cart_title:"Ihre Tasche",subtotal:"Zwischensumme",checkout:"Zur Kasse",wishlist_title:"Wunschliste",account_title:"Ihr Konto",login:"Anmelden",signup:"Registrieren",full_name:"Vollständiger Name",email_or_phone:"E-Mail oder Telefon",phone_number:"Telefonnummer",password:"Passwort",welcome_title:"Willkommen in der Maison",welcome_desc:"Ihr Konto ist bereit.",welcome_cta:"Loslegen",my_orders:"Meine Bestellungen",orders_login_prompt:"Melden Sie sich an, um Bestellungen zu sehen.",refund_title:"Rückerstattung Beantragen",refund_sub:"Wir antworten so bald wie möglich.",order_id:"Bestell-ID",order_name:"Produktname",refund_type:"Rückerstattungsart",rf_damaged:"Artikel beschädigt",rf_wrong:"Falscher Artikel",rf_changed:"Meinung geändert",rf_other:"Andere",address:"Adresse",refund_photo:"Foto (optional)",refund_photo_hint:"Klicken Sie, um ein Foto hochzuladen",submit_refund:"Anfrage Senden"},
+  sl:{nav_shop:"Trgovina",nav_categories:"Kategorije",nav_about:"Maison",nav_orders:"Moja Naročila",hero_eyebrow:"Nova Kolekcija — L'Extrait",hero_title:"Vonj,<br>ki ga ne nosiš.<br>Postaneš ga.",hero_desc:"Redke sestavine, sestavljene v majhnih serijah.",hero_cta:"Nakupuj Kolekcijo",hero_cta2:"Razišči Kategorije",trust_1:"Brezplačna dostava nad $120",trust_2:"100% pristno",trust_3:"7-dnevna vračila",trust_4:"Varno plačilo prek Stripe",cat_title:"Nakupuj po Kategoriji",cat_all:"Vse",cat_women:"Ženske",cat_men:"Moški",cat_unisex:"Unisex",cat_niche:"Niša",shop_title:"Kolekcija",search_placeholder:"Išči dišavo…",sort_newest:"Najnovejše",sort_price_asc:"Cena: naraščajoče",sort_price_desc:"Cena: padajoče",about_title:"Sestavljeno, ne izdelano",about_desc:"AMBRE NOIR sodeluje z majhnim krogom parfumerjev.",foot_shop:"Trgovina",foot_support:"Podpora",foot_track:"Sledi Naročilu",foot_refund:"Vračila",foot_contact:"Kontakt",cart_title:"Vaša Košarica",subtotal:"Vmesna vsota",checkout:"Na Blagajno",wishlist_title:"Seznam Želja",account_title:"Vaš Račun",login:"Prijava",signup:"Registracija",full_name:"Polno Ime",email_or_phone:"E-pošta ali telefon",phone_number:"Telefon",password:"Geslo",welcome_title:"Dobrodošli v Maison",welcome_desc:"Vaš račun je pripravljen.",welcome_cta:"Začni",my_orders:"Moja Naročila",orders_login_prompt:"Prijavite se za ogled naročil.",refund_title:"Zahtevaj Vračilo",refund_sub:"Odgovorili bomo takoj, ko bo mogoče.",order_id:"ID Naročila",order_name:"Ime Izdelka",refund_type:"Vrsta Vračila",rf_damaged:"Izdelek poškodovan",rf_wrong:"Napačen izdelek",rf_changed:"Premislil sem si",rf_other:"Drugo",address:"Naslov",refund_photo:"Fotografija (neobvezno)",refund_photo_hint:"Kliknite za nalaganje fotografije",submit_refund:"Pošlji Zahtevo"},
+  pt:{nav_shop:"Loja",nav_categories:"Categorias",nav_about:"Maison",nav_orders:"Meus Pedidos",hero_eyebrow:"Nova Coleção — L'Extrait",hero_title:"Um perfume<br>que não se veste.<br>Torna-se você.",hero_desc:"Ingredientes raros, compostos em pequenos lotes.",hero_cta:"Ver a Coleção",hero_cta2:"Explorar Categorias",trust_1:"Frete grátis acima de $120",trust_2:"100% autêntico",trust_3:"Devolução em 7 dias",trust_4:"Pagamento seguro via Stripe",cat_title:"Comprar por Categoria",cat_all:"Todos",cat_women:"Mulher",cat_men:"Homem",cat_unisex:"Unissex",cat_niche:"Nicho",shop_title:"A Coleção",search_placeholder:"Buscar fragrância…",sort_newest:"Mais recentes",sort_price_asc:"Preço: menor primeiro",sort_price_desc:"Preço: maior primeiro",about_title:"Composto, não fabricado",about_desc:"AMBRE NOIR trabalha com um pequeno círculo de perfumistas.",foot_shop:"Loja",foot_support:"Suporte",foot_track:"Rastrear Pedido",foot_refund:"Reembolsos",foot_contact:"Contato",cart_title:"Sua Sacola",subtotal:"Subtotal",checkout:"Finalizar Compra",wishlist_title:"Lista de Desejos",account_title:"Sua Conta",login:"Entrar",signup:"Cadastrar",full_name:"Nome Completo",email_or_phone:"Email ou telefone",phone_number:"Telefone",password:"Senha",welcome_title:"Bem-vindo à Maison",welcome_desc:"Sua conta está pronta.",welcome_cta:"Começar",my_orders:"Meus Pedidos",orders_login_prompt:"Entre para ver seus pedidos.",refund_title:"Solicitar Reembolso",refund_sub:"Responderemos assim que possível.",order_id:"ID do Pedido",order_name:"Nome do Produto",refund_type:"Tipo de Reembolso",rf_damaged:"Item danificado",rf_wrong:"Item errado",rf_changed:"Mudei de ideia",rf_other:"Outro",address:"Endereço",refund_photo:"Foto (opcional)",refund_photo_hint:"Clique para enviar uma foto",submit_refund:"Enviar Solicitação"},
+  nl:{nav_shop:"Shop",nav_categories:"Categorieën",nav_about:"Maison",nav_orders:"Mijn Bestellingen",hero_eyebrow:"Nieuwe Collectie — L'Extrait",hero_title:"Een geur<br>die je niet draagt.<br>Je wordt hem.",hero_desc:"Zeldzame ingrediënten, in kleine batches gemaakt.",hero_cta:"Bekijk de Collectie",hero_cta2:"Verken Categorieën",trust_1:"Gratis verzending vanaf $120",trust_2:"100% authentiek",trust_3:"7 dagen retourrecht",trust_4:"Veilig betalen via Stripe",cat_title:"Shop per Categorie",cat_all:"Alles",cat_women:"Dames",cat_men:"Heren",cat_unisex:"Unisex",cat_niche:"Niche",shop_title:"De Collectie",search_placeholder:"Zoek een geur…",sort_newest:"Nieuwste",sort_price_asc:"Prijs: laag naar hoog",sort_price_desc:"Prijs: hoog naar laag",about_title:"Gecomponeerd, niet vervaardigd",about_desc:"AMBRE NOIR werkt met een kleine kring parfumeurs.",foot_shop:"Shop",foot_support:"Ondersteuning",foot_track:"Bestelling Volgen",foot_refund:"Terugbetalingen",foot_contact:"Contact",cart_title:"Jouw Tas",subtotal:"Subtotaal",checkout:"Afrekenen",wishlist_title:"Verlanglijst",account_title:"Jouw Account",login:"Inloggen",signup:"Registreren",full_name:"Volledige Naam",email_or_phone:"E-mail of telefoon",phone_number:"Telefoonnummer",password:"Wachtwoord",welcome_title:"Welkom bij de Maison",welcome_desc:"Jouw account is klaar.",welcome_cta:"Begin met Ontdekken",my_orders:"Mijn Bestellingen",orders_login_prompt:"Log in om je bestellingen te zien.",refund_title:"Terugbetaling Aanvragen",refund_sub:"We reageren zodra mogelijk.",order_id:"Bestel-ID",order_name:"Productnaam",refund_type:"Type Terugbetaling",rf_damaged:"Artikel beschadigd",rf_wrong:"Verkeerd artikel",rf_changed:"Van gedachten veranderd",rf_other:"Anders",address:"Adres",refund_photo:"Foto (optioneel)",refund_photo_hint:"Klik om een foto te uploaden",submit_refund:"Verzoek Versturen"},
+  pl:{nav_shop:"Sklep",nav_categories:"Kategorie",nav_about:"Maison",nav_orders:"Moje Zamówienia",hero_eyebrow:"Nowa Kolekcja — L'Extrait",hero_title:"Zapach,<br>którego się nie nosi.<br>Stajesz się nim.",hero_desc:"Rzadkie składniki, komponowane w małych partiach.",hero_cta:"Zobacz Kolekcję",hero_cta2:"Przeglądaj Kategorie",trust_1:"Bezpłatna wysyłka od $120",trust_2:"100% autentyczne",trust_3:"7-dniowy zwrot",trust_4:"Bezpieczna płatność przez Stripe",cat_title:"Kupuj wg Kategorii",cat_all:"Wszystko",cat_women:"Damskie",cat_men:"Męskie",cat_unisex:"Unisex",cat_niche:"Niszowe",shop_title:"Kolekcja",search_placeholder:"Szukaj zapachu…",sort_newest:"Najnowsze",sort_price_asc:"Cena: rosnąco",sort_price_desc:"Cena: malejąco",about_title:"Komponowane, nie produkowane",about_desc:"AMBRE NOIR współpracuje z wąskim gronem perfumiarzy.",foot_shop:"Sklep",foot_support:"Wsparcie",foot_track:"Śledź Zamówienie",foot_refund:"Zwroty",foot_contact:"Kontakt",cart_title:"Twoja Torba",subtotal:"Suma częściowa",checkout:"Do Kasy",wishlist_title:"Lista Życzeń",account_title:"Twoje Konto",login:"Zaloguj się",signup:"Zarejestruj się",full_name:"Imię i Nazwisko",email_or_phone:"E-mail lub telefon",phone_number:"Numer Telefonu",password:"Hasło",welcome_title:"Witamy w Maison",welcome_desc:"Twoje konto jest gotowe.",welcome_cta:"Zacznij Odkrywać",my_orders:"Moje Zamówienia",orders_login_prompt:"Zaloguj się, aby zobaczyć zamówienia.",refund_title:"Poproś o Zwrot",refund_sub:"Odpowiemy jak najszybciej.",order_id:"ID Zamówienia",order_name:"Nazwa Produktu",refund_type:"Typ Zwrotu",rf_damaged:"Towar uszkodzony",rf_wrong:"Zły produkt",rf_changed:"Zmieniłem zdanie",rf_other:"Inne",address:"Adres",refund_photo:"Zdjęcie (opcjonalnie)",refund_photo_hint:"Kliknij, aby dodać zdjęcie",submit_refund:"Wyślij Wniosek"},
+  ru:{nav_shop:"Магазин",nav_categories:"Категории",nav_about:"Дом",nav_orders:"Мои Заказы",hero_eyebrow:"Новая Коллекция — L'Extrait",hero_title:"Аромат,<br>который не носят.<br>Им становятся.",hero_desc:"Редкие ингредиенты, созданные небольшими партиями.",hero_cta:"Смотреть Коллекцию",hero_cta2:"Категории",trust_1:"Бесплатная доставка от $120",trust_2:"100% подлинность",trust_3:"Возврат в течение 7 дней",trust_4:"Безопасная оплата через Stripe",cat_title:"Покупки по Категориям",cat_all:"Все",cat_women:"Женские",cat_men:"Мужские",cat_unisex:"Унисекс",cat_niche:"Нишевые",shop_title:"Коллекция",search_placeholder:"Поиск аромата…",sort_newest:"Новинки",sort_price_asc:"Цена: по возрастанию",sort_price_desc:"Цена: по убыванию",about_title:"Создано, а не произведено",about_desc:"AMBRE NOIR работает с небольшим кругом парфюмеров.",foot_shop:"Магазин",foot_support:"Поддержка",foot_track:"Отследить Заказ",foot_refund:"Возвраты",foot_contact:"Контакты",cart_title:"Ваша Корзина",subtotal:"Промежуточный итог",checkout:"Оформить Заказ",wishlist_title:"Избранное",account_title:"Ваш Аккаунт",login:"Войти",signup:"Регистрация",full_name:"Полное Имя",email_or_phone:"Email или телефон",phone_number:"Номер телефона",password:"Пароль",welcome_title:"Добро пожаловать в Дом",welcome_desc:"Ваш аккаунт готов.",welcome_cta:"Начать",my_orders:"Мои Заказы",orders_login_prompt:"Войдите, чтобы увидеть заказы.",refund_title:"Запросить Возврат",refund_sub:"Мы ответим как можно скорее.",order_id:"ID Заказа",order_name:"Название Товара",refund_type:"Тип Возврата",rf_damaged:"Товар поврежден",rf_wrong:"Не тот товар",rf_changed:"Передумал",rf_other:"Другое",address:"Адрес",refund_photo:"Фото (необязательно)",refund_photo_hint:"Нажмите, чтобы загрузить фото",submit_refund:"Отправить Запрос"}
+};
+let currentLang = localStorage.getItem("an_lang") || "en";
+
+function applyLanguage(lang){
+  currentLang = lang;
+  localStorage.setItem("an_lang", lang);
+  const dict = I18N[lang] || I18N.en;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const key = el.getAttribute("data-i18n");
+    if(dict[key]) el.innerHTML = dict[key];
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
+    const key = el.getAttribute("data-i18n-placeholder");
+    if(dict[key]) el.placeholder = dict[key];
+  });
+  $("#langSelect").value = lang;
+}
+
+/* ---- State ---- */
+let PRODUCTS = [];
+let cart = JSON.parse(localStorage.getItem("an_cart") || "[]");
+let wishlist = JSON.parse(localStorage.getItem("an_wishlist") || "[]");
+let currentUser = JSON.parse(localStorage.getItem("an_user") || "null");
+let activeCategory = "All";
+let activeProduct = null;
+let selectedSize = null;
+let checkoutPaymentMethod = "cod";
+let authMode = "login";
+let refundPhotoFile = null;
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+const fmt = (n) => "$" + Number(n || 0).toFixed(2);
+const saveCart = () => localStorage.setItem("an_cart", JSON.stringify(cart));
+const saveWishlist = () => localStorage.setItem("an_wishlist", JSON.stringify(wishlist));
+const genOrderId = () => "AN-" + Date.now().toString(36).toUpperCase() + "-" + Math.floor(Math.random()*900+100);
+
+function toast(msg){
+  let t = document.createElement("div");
+  t.textContent = msg;
+  t.style.cssText = "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 22px;font-size:13px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.3)";
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2400);
+}
+async function postWebhook(url, payload){
+  try{ await fetch(url, {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}); }
+  catch(e){ console.warn("Webhook call failed:", url, e); }
+}
+
+/* ---- Products ---- */
+async function loadProducts(){
+  if(!supabaseClient){ PRODUCTS = []; renderGrid(); return; }
+  const { data, error } = await supabaseClient.from("perfumes").select("*").order("id",{ascending:false});
+  if(error){ console.error(error); $("#productGrid").innerHTML = `<div class="empty">Couldn't load the collection. Check your Supabase credentials.</div>`; return; }
+  PRODUCTS = (data || []).map(normalizeProduct);
+  renderGrid();
+}
+function normalizeProduct(row){
+  const price = parseFloat(row.price) || 0;
+  const discount = parseFloat(row.discount_percent) || 0;
+  const finalPrice = discount > 0 ? price - (price*discount/100) : price;
+  const sizes = (row.size_ml || "").split(",").map(s=>s.trim()).filter(Boolean);
+  const stock = parseInt(row.stock_quantity) || 0;
+  return {
+    id: row.id, name: row.name || "Untitled", brandLine: row.brand_line || "",
+    category: row.category || "Unisex", family: row.fragrance_family || "",
+    topNotes: row.top_notes || "", heartNotes: row.heart_notes || "", baseNotes: row.base_notes || "",
+    price, discount, finalPrice, sizes, stock,
+    image: row.image_url || "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800&auto=format&fit=crop",
+    description: row.description || "", sku: row.sku || "",
+    status: row.status || (stock>0 ? "active" : "out_of_stock")
+  };
+}
+function getFilteredProducts(){
+  let list = [...PRODUCTS];
+  if(activeCategory !== "All") list = list.filter(p=>p.category===activeCategory);
+  const q = $("#searchInput").value.trim().toLowerCase();
+  if(q) list = list.filter(p=>p.name.toLowerCase().includes(q) || p.family.toLowerCase().includes(q));
+  const sort = $("#sortSelect").value;
+  if(sort==="price-asc") list.sort((a,b)=>a.finalPrice-b.finalPrice);
+  if(sort==="price-desc") list.sort((a,b)=>b.finalPrice-a.finalPrice);
+  if(sort==="newest") list.sort((a,b)=> b.id>a.id?1:-1);
+  return list;
+}
+function renderGrid(){
+  const list = getFilteredProducts();
+  const grid = $("#productGrid");
+  if(list.length===0){ grid.innerHTML = `<div class="empty">No fragrances match right now.</div>`; return; }
+  grid.innerHTML = list.map(productCardHTML).join("");
+  grid.querySelectorAll("[data-open-product]").forEach(el=>el.addEventListener("click",()=>openProductModal(el.dataset.openProduct)));
+  grid.querySelectorAll("[data-wish-toggle]").forEach(el=>el.addEventListener("click",(e)=>{e.stopPropagation();toggleWishlist(el.dataset.wishToggle);}));
+  grid.querySelectorAll("[data-quick-add]").forEach(el=>el.addEventListener("click",(e)=>{e.stopPropagation();quickAdd(el.dataset.quickAdd);}));
+}
+function productCardHTML(p){
+  const inWish = wishlist.includes(String(p.id));
+  const soldOut = p.stock<=0 || p.status==="out_of_stock";
+  return `
+  <div class="card">
+    <div class="card__imgwrap" data-open-product="${p.id}">
+      <img src="${p.image}" alt="${p.name}" loading="lazy">
+      ${p.discount>0 ? `<span class="card__badge">-${p.discount}%</span>` : ""}
+      <button class="card__wish ${inWish?'active':''}" data-wish-toggle="${p.id}"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.4-9.5-9C.6 8.3 2 4.5 6 4c2-.2 3.6.8 4.5 2 .9-1.2 2.5-2.2 4.5-2 4 .5 5.4 4.3 3.5 8-2.5 4.6-9.5 9-9.5 9z"/></svg></button>
+      ${soldOut ? `<div class="card__soldout">Sold Out</div>` : ""}
+    </div>
+    <div class="card__body">
+      <div class="card__cat">${p.category}${p.family?" · "+p.family:""}</div>
+      <div class="card__name" data-open-product="${p.id}">${p.name}</div>
+      <div class="card__price"><span class="now">${fmt(p.finalPrice)}</span>${p.discount>0?`<span class="was">${fmt(p.price)}</span><span class="off">${p.discount}% OFF</span>`:""}</div>
+      <button class="card__add" data-quick-add="${p.id}" ${soldOut?"disabled":""}>${soldOut?"Sold Out":"Add to Bag"}</button>
+    </div>
+  </div>`;
+}
+$("#categoryFilters").addEventListener("click",(e)=>{
+  const btn = e.target.closest(".chip"); if(!btn) return;
+  $$(".chip").forEach(c=>c.classList.remove("active")); btn.classList.add("active");
+  activeCategory = btn.dataset.cat; renderGrid();
+});
+$("#searchInput").addEventListener("input", renderGrid);
+$("#sortSelect").addEventListener("change", renderGrid);
+
+/* ---- Wishlist ---- */
+function toggleWishlist(id){
+  id = String(id);
+  const idx = wishlist.indexOf(id);
+  if(idx>=0){ wishlist.splice(idx,1); toast("Removed from wishlist"); }
+  else{ wishlist.push(id); toast("Saved to wishlist"); }
+  saveWishlist(); renderGrid(); renderWishBadge(); renderWishDrawer();
+}
+function renderWishBadge(){ $("#wishBadge").textContent = wishlist.length || ""; }
+function renderWishDrawer(){
+  if(wishlist.length===0){ $("#wishItems").innerHTML = `<div class="empty">Nothing saved yet.</div>`; return; }
+  const items = wishlist.map(id=>PRODUCTS.find(p=>String(p.id)===String(id))).filter(Boolean);
+  $("#wishItems").innerHTML = items.map(p=>`
+    <div class="cart-item"><img src="${p.image}" alt="${p.name}">
+      <div class="cart-item__info"><div class="cart-item__name">${p.name}</div><div class="cart-item__meta">${fmt(p.finalPrice)}</div>
+        <div style="display:flex;gap:10px"><button class="btn btn-dark" style="padding:8px 14px;font-size:10px" data-quick-add="${p.id}">Add</button><button class="remove-link" data-wish-toggle="${p.id}">Remove</button></div>
+      </div></div>`).join("");
+  $("#wishItems").querySelectorAll("[data-quick-add]").forEach(el=>el.addEventListener("click",()=>quickAdd(el.dataset.quickAdd)));
+  $("#wishItems").querySelectorAll("[data-wish-toggle]").forEach(el=>el.addEventListener("click",()=>toggleWishlist(el.dataset.wishToggle)));
+}
+
+/* ---- Cart ---- */
+function quickAdd(id){
+  const p = PRODUCTS.find(x=>String(x.id)===String(id)); if(!p) return;
+  addToCart(p, p.sizes[0] || "50", 1);
+}
+function addToCart(p, size, qty){
+  const existing = cart.find(c=>c.id===p.id && c.size===size);
+  if(existing) existing.qty += qty;
+  else cart.push({id:p.id,name:p.name,image:p.image,price:p.finalPrice,size,qty});
+  saveCart(); renderCartBadge(); renderCartDrawer(); toast(`${p.name} added to bag`);
+}
+function updateQty(idx, delta){ cart[idx].qty+=delta; if(cart[idx].qty<=0) cart.splice(idx,1); saveCart(); renderCartBadge(); renderCartDrawer(); }
+function removeFromCart(idx){ cart.splice(idx,1); saveCart(); renderCartBadge(); renderCartDrawer(); }
+function cartSubtotal(){ return cart.reduce((s,c)=>s+c.price*c.qty,0); }
+function renderCartBadge(){ $("#cartBadge").textContent = cart.reduce((s,c)=>s+c.qty,0) || ""; }
+function renderCartDrawer(){
+  if(cart.length===0){ $("#cartItems").innerHTML = `<div class="empty">Your bag is empty.</div>`; $("#cartSubtotal").textContent=fmt(0); return; }
+  $("#cartItems").innerHTML = cart.map((c,idx)=>`
+    <div class="cart-item"><img src="${c.image}" alt="${c.name}">
+      <div class="cart-item__info"><div class="cart-item__name">${c.name}</div><div class="cart-item__meta">${c.size}ml</div>
+        <div class="qty-ctrl"><button data-qty="-1" data-idx="${idx}">−</button><span>${c.qty}</span><button data-qty="1" data-idx="${idx}">+</button></div>
+        <div class="cart-item__foot"><span class="cart-item__price">${fmt(c.price*c.qty)}</span><span class="remove-link" data-remove="${idx}">Remove</span></div>
+      </div></div>`).join("");
+  $("#cartSubtotal").textContent = fmt(cartSubtotal());
+  $("#cartItems").querySelectorAll("[data-qty]").forEach(el=>el.addEventListener("click",()=>updateQty(parseInt(el.dataset.idx),parseInt(el.dataset.qty))));
+  $("#cartItems").querySelectorAll("[data-remove]").forEach(el=>el.addEventListener("click",()=>removeFromCart(parseInt(el.dataset.remove))));
+}
+function openDrawer(o,d){ $(o).classList.add("open"); $(d).classList.add("open"); }
+function closeDrawer(o,d){ $(o).classList.remove("open"); $(d).classList.remove("open"); }
+$("#btnCart").addEventListener("click",()=>openDrawer("#cartOverlay","#cartDrawer"));
+$("#cartClose").addEventListener("click",()=>closeDrawer("#cartOverlay","#cartDrawer"));
+$("#cartOverlay").addEventListener("click",()=>closeDrawer("#cartOverlay","#cartDrawer"));
+$("#btnWishlistNav").addEventListener("click",()=>{renderWishDrawer();openDrawer("#wishOverlay","#wishDrawer");});
+$("#wishClose").addEventListener("click",()=>closeDrawer("#wishOverlay","#wishDrawer"));
+$("#wishOverlay").addEventListener("click",()=>closeDrawer("#wishOverlay","#wishDrawer"));
+
+/* ---- Product Modal ---- */
+function openProductModal(id){
+  const p = PRODUCTS.find(x=>String(x.id)===String(id)); if(!p) return;
+  activeProduct = p; selectedSize = p.sizes[0] || null;
+  renderProductModal();
+  $("#productOverlay").classList.add("open"); $("#productModal").classList.add("open");
+}
+function closeProductModal(){ $("#productOverlay").classList.remove("open"); $("#productModal").classList.remove("open"); }
+function renderProductModal(){
+  const p = activeProduct; const soldOut = p.stock<=0;
+  let stockLine = soldOut ? `<div class="stock-line out">Out of stock</div>` : p.stock<5 ? `<div class="stock-line low">Only ${p.stock} left</div>` : `<div class="stock-line ok">In stock</div>`;
+  $("#pmodalContent").innerHTML = `
+    <div class="pmodal__gallery"><img src="${p.image}" alt="${p.name}"></div>
+    <div class="pmodal__info">
+      <div class="pmodal__cat">${p.category}${p.family?" · "+p.family:""}</div>
+      <h2 class="pmodal__name">${p.name}</h2>
+      <div class="pmodal__price">${fmt(p.finalPrice)} ${p.discount>0?`<span class="was" style="font-size:13px">${fmt(p.price)}</span> <span class="off">${p.discount}% OFF</span>`:""}</div>
+      ${(p.topNotes||p.heartNotes||p.baseNotes) ? `<div class="pmodal__notes">${p.topNotes?`<b>Top:</b> ${p.topNotes}<br>`:""}${p.heartNotes?`<b>Heart:</b> ${p.heartNotes}<br>`:""}${p.baseNotes?`<b>Base:</b> ${p.baseNotes}`:""}</div>` : ""}
+      <p class="pmodal__desc">${p.description || "No description provided yet."}</p>
+      ${p.sizes.length ? `<label style="font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--sage)">Size (ml)</label>
+      <div class="swatch-row">${p.sizes.map(s=>`<button class="swatch ${s===selectedSize?'selected':''}" data-size="${s}">${s}ml</button>`).join("")}</div>` : ""}
+      ${stockLine}
+      <button class="btn btn-gold" id="modalAddBtn" style="width:100%;justify-content:center" ${soldOut?"disabled":""}>${soldOut?"Sold Out":"Add to Bag"}</button>
+      <p class="helper-text" style="margin-top:12px">SKU: ${p.sku || "—"}</p>
+    </div>`;
+  $("#pmodalContent").querySelectorAll("[data-size]").forEach(el=>el.addEventListener("click",()=>{selectedSize=el.dataset.size;renderProductModal();}));
+  const addBtn = $("#modalAddBtn");
+  if(addBtn) addBtn.addEventListener("click",()=>{ addToCart(p, selectedSize||"50", 1); closeProductModal(); openDrawer("#cartOverlay","#cartDrawer"); });
+}
+$("#productClose").addEventListener("click", closeProductModal);
+$("#productOverlay").addEventListener("click", closeProductModal);
+
+/* ---- Checkout (real Stripe Checkout redirect, or COD) ---- */
+$("#btnCheckout").addEventListener("click",()=>{
+  if(cart.length===0){ toast("Your bag is empty"); return; }
+  closeDrawer("#cartOverlay","#cartDrawer");
+  checkoutPaymentMethod = "cod";
+  renderCheckoutStep1();
+  $("#checkoutOverlay").classList.add("open"); $("#checkoutModal").classList.add("open");
+});
+$("#checkoutClose").addEventListener("click", closeCheckout);
+$("#checkoutOverlay").addEventListener("click", closeCheckout);
+function closeCheckout(){ $("#checkoutOverlay").classList.remove("open"); $("#checkoutModal").classList.remove("open"); }
+
+function renderCheckoutStep1(){
+  $("#checkoutBody").innerHTML = `
+    <h2 style="font-size:26px;margin-bottom:18px;font-style:italic">Checkout</h2>
+    <div class="field"><label>Full Name</label><input type="text" id="ckName" value="${currentUser?currentUser.name||'':''}"></div>
+    <div class="row2">
+      <div class="field"><label>Email</label><input type="email" id="ckEmail" value="${currentUser?currentUser.email||'':''}"></div>
+      <div class="field"><label>Phone</label><input type="tel" id="ckPhone"></div>
+    </div>
+    <div class="field"><label>Delivery Address</label><textarea id="ckAddress" rows="2"></textarea></div>
+    <div class="row2">
+      <div class="field"><label>City</label><input type="text" id="ckCity"></div>
+      <div class="field"><label>Postal Code</label><input type="text" id="ckPostal"></div>
+    </div>
+    <label style="font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--sage);display:block;margin-bottom:8px">Payment Method</label>
+    <div class="pay-options">
+      <div class="pay-opt selected" data-pay="cod">Cash on Delivery</div>
+      <div class="pay-opt" data-pay="card">Card (Stripe)</div>
+    </div>
+    <div class="subtotal-row"><span>Subtotal</span><span>${fmt(cartSubtotal())}</span></div>
+    <div class="subtotal-row"><span>Shipping</span><span>${fmt(6)}</span></div>
+    <div class="subtotal-row" style="font-size:16px;border-top:1px solid var(--ivory-dim);padding-top:10px"><span>Total</span><span>${fmt(cartSubtotal()+6)}</span></div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:6px" id="placeOrderBtn">Place Order</button>
+  `;
+  $$('.pay-opt').forEach(el=>el.addEventListener("click",()=>{
+    $$('.pay-opt').forEach(x=>x.classList.remove("selected")); el.classList.add("selected");
+    checkoutPaymentMethod = el.dataset.pay;
+  }));
+  $("#placeOrderBtn").addEventListener("click", handlePlaceOrder);
+}
+
+async function handlePlaceOrder(){
+  const name = $("#ckName").value.trim();
+  const email = $("#ckEmail").value.trim();
+  const phone = $("#ckPhone").value.trim();
+  const address = $("#ckAddress").value.trim();
+  const city = $("#ckCity").value.trim();
+  const postal = $("#ckPostal").value.trim();
+  if(!name||!email||!phone||!address||!city||!postal){ toast("Please fill in all fields"); return; }
+
+  const orderId = genOrderId();
+  const total = cartSubtotal() + 6;
+  const btn = $("#placeOrderBtn");
+
+  if(checkoutPaymentMethod === "card"){
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> Redirecting to secure checkout…`;
+    // Stash the pending order so we can save it to Supabase once Stripe confirms payment.
+    sessionStorage.setItem("an_pending_order", JSON.stringify({ orderId, name, email, phone, address, city, postal, cart, total }));
+    try{
+      const res = await fetch("/api/create-checkout-session", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ cart, orderId, customerEmail: email, origin: window.location.origin })
+      });
+      const data = await res.json();
+      if(data.url){ window.location.href = data.url; return; }
+      toast(data.error || "Couldn't start checkout — is Stripe configured yet?");
+      btn.disabled = false; btn.textContent = "Place Order";
+    }catch(e){
+      toast("Checkout failed to start.");
+      btn.disabled = false; btn.textContent = "Place Order";
+    }
+    return;
+  }
+
+  // Cash on Delivery — save immediately
+  btn.disabled = true; btn.innerHTML = `<span class="spinner"></span> Placing Order…`;
+  await saveOrderAndConfirm({ orderId, name, email, phone, address, city, postal, total, paymentMethod:"cod", paymentStatus:"pending_cod" });
+}
+
+async function saveOrderAndConfirm({orderId, name, email, phone, address, city, postal, total, paymentMethod, paymentStatus, stripeSessionId}){
+  const orderRecord = {
+    id: orderId, customer_name: name, email, phone_number: phone, address, city, postal_code: postal,
+    product_ids: JSON.stringify(cart.map(c=>c.id)), size_selected: cart.map(c=>c.size).join(","),
+    quantity: cart.reduce((s,c)=>s+c.qty,0), total_amount: total,
+    payment_method: paymentMethod, payment_status: paymentStatus, stripe_session_id: stripeSessionId || null,
+    order_status: "placed", order_date: new Date().toISOString()
+  };
+  if(supabaseClient){
+    const { error } = await supabaseClient.from("orders").insert(orderRecord);
+    if(error) console.error("Order insert failed:", error);
+  }
+  await postWebhook(WEBHOOKS.orderPlaced, {
+    customer_name:name, email, phone, address, city, postal_code:postal,
+    cart_items:cart, total_amount:total, payment_method:paymentMethod, order_id:orderId
+  });
+  if(paymentMethod === "card"){
+    await postWebhook(WEBHOOKS.paymentStatus, { order_id: orderId, payment_status: "paid", stripe_session_id: stripeSessionId });
+  }
+  currentUser = { name, email }; localStorage.setItem("an_user", JSON.stringify(currentUser));
+  cart = []; saveCart(); renderCartBadge();
+  renderCheckoutConfirmation(orderId, total, paymentMethod);
+}
+
+function renderCheckoutConfirmation(orderId, total, method){
+  const label = method === "card" ? "Card — Paid via Stripe" : "Cash on Delivery";
+  $("#checkoutBody").innerHTML = `
+    <h2 style="font-size:26px;font-style:italic">Order Confirmed</h2>
+    <p style="font-size:13px;color:var(--sage);margin-top:6px">Your order has been placed successfully.</p>
+    <div class="confirm-num">${orderId}</div>
+    <p style="font-size:13px;margin-bottom:20px">Total: <strong>${fmt(total)}</strong> — ${label}</p>
+    <button class="btn btn-dark" style="width:100%;justify-content:center" id="ckDone">Continue Shopping</button>
+  `;
+  $("#ckDone").addEventListener("click", closeCheckout);
+  $("#checkoutOverlay").classList.add("open"); $("#checkoutModal").classList.add("open");
+}
+
+// Handle return from Stripe Checkout
+async function handleStripeRedirect(){
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session_id");
+  const orderSuccess = params.get("order_success");
+  const orderCancelled = params.get("order_cancelled");
+  const pending = JSON.parse(sessionStorage.getItem("an_pending_order") || "null");
+
+  if(orderCancelled){
+    toast("Checkout was cancelled — your bag is still saved.");
+    window.history.replaceState({}, "", window.location.pathname);
+    return;
+  }
+  if(orderSuccess && sessionId && pending){
+    try{
+      const res = await fetch(`/api/verify-session?session_id=${encodeURIComponent(sessionId)}`);
+      const data = await res.json();
+      if(data.paid){
+        cart = pending.cart; // restore for order-record purposes
+        await saveOrderAndConfirm({
+          orderId: pending.orderId, name: pending.name, email: pending.email, phone: pending.phone,
+          address: pending.address, city: pending.city, postal: pending.postal, total: pending.total,
+          paymentMethod: "card", paymentStatus: "paid", stripeSessionId: sessionId
+        });
+      } else {
+        toast("Payment wasn't completed. Please try again.");
+      }
+    }catch(e){ console.warn("Session verification failed:", e); }
+    sessionStorage.removeItem("an_pending_order");
+    window.history.replaceState({}, "", window.location.pathname);
+  }
+}
+
+/* ---- Auth (webhook-driven, per your n8n workflow) ---- */
+$("#btnAccount").addEventListener("click",()=>{ if(currentUser){ openOrdersModal(); } else { openAuthModal(); } });
+function openAuthModal(){ $("#authOverlay").classList.add("open"); $("#authModal").classList.add("open"); }
+function closeAuthModal(){ $("#authOverlay").classList.remove("open"); $("#authModal").classList.remove("open"); }
+$("#authClose").addEventListener("click", closeAuthModal);
+$("#authOverlay").addEventListener("click", closeAuthModal);
+$("#tabLogin").addEventListener("click",()=>{
+  authMode="login"; $("#tabLogin").classList.add("active"); $("#tabSignup").classList.remove("active");
+  $("#authSubmit").textContent = I18N[currentLang].login;
+  $("#signupNameField").style.display="none"; $("#signupPhoneField").style.display="none";
+});
+$("#tabSignup").addEventListener("click",()=>{
+  authMode="signup"; $("#tabSignup").classList.add("active"); $("#tabLogin").classList.remove("active");
+  $("#authSubmit").textContent = I18N[currentLang].signup;
+  $("#signupNameField").style.display="block"; $("#signupPhoneField").style.display="block";
+});
+
+$("#authSubmit").addEventListener("click", async ()=>{
+  const identifier = $("#authIdentifier").value.trim();
+  const password = $("#authPassword").value;
+  const name = $("#authName").value.trim();
+  const phone = $("#authPhone").value.trim();
+  const banner = $("#authBanner"); banner.innerHTML = "";
+
+  if(!identifier || !password){ banner.innerHTML = `<div class="msg-banner err">Enter both fields.</div>`; return; }
+  if(authMode==="signup" && !name){ banner.innerHTML = `<div class="msg-banner err">Enter your name.</div>`; return; }
+
+  const btn = $("#authSubmit"); const originalText = btn.textContent;
+  btn.disabled = true; btn.innerHTML = `<span class="spinner"></span>`;
+
+  try{
+    const res = await fetch(WEBHOOKS.authWebhook, {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        action: authMode,
+        email: identifier.includes("@") ? identifier : null,
+        phone: !identifier.includes("@") ? identifier : (phone || null),
+        name: authMode==="signup" ? name : undefined,
+        password
+      })
+    });
+    const data = await res.json().catch(()=>({success:false, message:"Unexpected response from server."}));
+
+    if(!data.success){
+      banner.innerHTML = `<div class="msg-banner err">${data.message || "That didn't work — please check your details."}</div>`;
+      btn.disabled = false; btn.textContent = originalText;
+      return;
+    }
+
+    currentUser = { name: data.customer?.name || name || identifier, email: identifier.includes("@") ? identifier : (data.customer?.email || ""), phone: !identifier.includes("@") ? identifier : phone };
+    localStorage.setItem("an_user", JSON.stringify(currentUser));
+    banner.innerHTML = `<div class="msg-banner ok">Welcome, ${currentUser.name}!</div>`;
+
+    setTimeout(()=>{
+      closeAuthModal();
+      btn.disabled = false; btn.textContent = originalText;
+      if(authMode === "signup") openWelcomeModal();
+    }, 600);
+  }catch(e){
+    banner.innerHTML = `<div class="msg-banner err">Couldn't reach the login service. Please try again.</div>`;
+    btn.disabled = false; btn.textContent = originalText;
+  }
+});
+
+function openWelcomeModal(){ $("#welcomeOverlay").classList.add("open"); $("#welcomeModal").classList.add("open"); }
+$("#welcomeDone").addEventListener("click",()=>{ $("#welcomeOverlay").classList.remove("open"); $("#welcomeModal").classList.remove("open"); });
+$("#welcomeOverlay").addEventListener("click",()=>{ $("#welcomeOverlay").classList.remove("open"); $("#welcomeModal").classList.remove("open"); });
+
+/* ---- Orders ---- */
+$("#navOrders").addEventListener("click",(e)=>{e.preventDefault();openOrdersModal();});
+$("#footTrack").addEventListener("click",(e)=>{e.preventDefault();openOrdersModal();});
+$("#ordersClose").addEventListener("click",()=>{$("#ordersOverlay").classList.remove("open");$("#ordersModal").classList.remove("open");});
+$("#ordersOverlay").addEventListener("click",()=>{$("#ordersOverlay").classList.remove("open");$("#ordersModal").classList.remove("open");});
+
+async function openOrdersModal(){
+  $("#ordersOverlay").classList.add("open"); $("#ordersModal").classList.add("open");
+  if(!currentUser){
+    $("#ordersSubhead").textContent = I18N[currentLang].orders_login_prompt;
+    $("#ordersList").innerHTML = `<button class="btn btn-gold" id="ordersLoginBtn">${I18N[currentLang].login} / ${I18N[currentLang].signup}</button>`;
+    $("#ordersLoginBtn").addEventListener("click",()=>{ $("#ordersOverlay").classList.remove("open"); $("#ordersModal").classList.remove("open"); openAuthModal(); });
+    return;
+  }
+  $("#ordersSubhead").textContent = `Showing orders for ${currentUser.email || currentUser.phone}`;
+  $("#ordersList").innerHTML = `<div class="empty">Loading…</div>`;
+  let orders = [];
+  if(supabaseClient){
+    const emailOrPhone = currentUser.email || currentUser.phone;
+    const { data, error } = await supabaseClient.from("orders").select("*").eq("email", emailOrPhone).order("order_date",{ascending:false});
+    if(!error && data) orders = data;
+  }
+  if(orders.length===0){ $("#ordersList").innerHTML = `<div class="empty">No orders yet.</div>`; return; }
+  $("#ordersList").innerHTML = orders.map(o=>`
+    <div class="order-row">
+      <div class="order-row__top"><span>${o.id}</span><span class="status-pill ${o.order_status||'placed'}">${(o.order_status||'placed').replace('_',' ')}</span></div>
+      <div style="font-size:12px;color:var(--sage)">${new Date(o.order_date).toLocaleString()} · ${fmt(o.total_amount)}</div>
+    </div>`).join("");
+}
+
+/* ---- Refund (with optional photo upload, response comes async via webhook) ---- */
+$("#footRefund").addEventListener("click",(e)=>{e.preventDefault(); openRefundModal();});
+function openRefundModal(){ $("#refundOverlay").classList.add("open"); $("#refundModal").classList.add("open"); }
+$("#refundClose").addEventListener("click",()=>{$("#refundOverlay").classList.remove("open");$("#refundModal").classList.remove("open");});
+$("#refundOverlay").addEventListener("click",()=>{$("#refundOverlay").classList.remove("open");$("#refundModal").classList.remove("open");});
+
+$("#rfDropZone").addEventListener("click",()=>$("#rfPhoto").click());
+$("#rfPhoto").addEventListener("change",()=>{
+  const file = $("#rfPhoto").files[0];
+  if(file){ refundPhotoFile = file; $("#rfDropZone").textContent = file.name; $("#rfDropZone").classList.add("has-file"); }
+});
+
+$("#rfSubmit").addEventListener("click", async ()=>{
+  const orderId = $("#rfOrderId").value.trim();
+  const orderName = $("#rfOrderName").value.trim();
+  const refundType = $("#rfType").value;
+  const phone = $("#rfPhone").value.trim();
+  const address = $("#rfAddress").value.trim();
+  const banner = $("#refundBanner"); banner.innerHTML = "";
+
+  if(!orderId || !orderName || !phone || !address){ banner.innerHTML = `<div class="msg-banner err">Please fill in all required fields.</div>`; return; }
+
+  const btn = $("#rfSubmit"); btn.disabled = true; btn.innerHTML = `<span class="spinner"></span> Submitting…`;
+
+  let imageUrl = null;
+  if(refundPhotoFile && supabaseClient){
+    try{
+      const fileName = `refunds/${orderId}-${Date.now()}-${refundPhotoFile.name}`;
+      const { data, error } = await supabaseClient.storage.from("refund-photos").upload(fileName, refundPhotoFile);
+      if(!error){
+        const { data: pub } = supabaseClient.storage.from("refund-photos").getPublicUrl(fileName);
+        imageUrl = pub?.publicUrl || null;
+      }
+    }catch(e){ console.warn("Photo upload failed:", e); }
+  }
+
+  const refundRecord = {
+    id: "RF-" + Date.now().toString(36).toUpperCase(),
+    order_id: orderId, order_name: orderName, refund_type: refundType,
+    phone_number: phone, address, image_url: imageUrl, status: "pending",
+    requested_at: new Date().toISOString()
+  };
+  if(supabaseClient){
+    const { error } = await supabaseClient.from("refund_requests").insert(refundRecord);
+    if(error) console.error("Refund insert failed:", error);
+  }
+  // Fire and forget — the merchant may respond later via the webhook's own automation, not synchronously here.
+  postWebhook(WEBHOOKS.refundRequest, refundRecord);
+
+  banner.innerHTML = `<div class="msg-banner ok">Your refund request has been submitted. We'll follow up by phone or email once it's reviewed.</div>`;
+  btn.disabled = false; btn.textContent = I18N[currentLang].submit_refund;
+  $("#rfOrderId").value=""; $("#rfOrderName").value=""; $("#rfPhone").value=""; $("#rfAddress").value="";
+  refundPhotoFile = null; $("#rfDropZone").textContent = I18N[currentLang].refund_photo_hint; $("#rfDropZone").classList.remove("has-file");
+});
+
+/* ---- Language switcher ---- */
+$("#langSelect").addEventListener("change",(e)=>applyLanguage(e.target.value));
+
+/* ---- Init ---- */
+renderCartBadge();
+renderWishBadge();
+applyLanguage(currentLang);
+initConfig().then(()=>{ loadProducts(); handleStripeRedirect(); });
+</script>
+</body>
+</html>
