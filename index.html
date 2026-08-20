@@ -504,7 +504,8 @@ const WEBHOOKS = {
   orderPlaced:   "https://automate.haroonai.com/webhook-test/order-placed",
   paymentStatus: "https://automate.haroonai.com/webhook-test/payment-status",
   refundRequest: "https://automate.haroonai.com/webhook-test/refund-request",
-  chatbot:       "https://automate.haroonai.com/webhook-test/chatbot6357"
+  chatbot:       "https://automate.haroonai.com/webhook-test/chatbot6357",
+  cartAbandoned: "https://automate.haroonai.com/webhook-test/webhook/cart-abandoned"
 };
 const WHATSAPP_NUMBER = "996775212327"; // wa.me format, no +
 
@@ -666,14 +667,30 @@ function quickAdd(id){
   const p = PRODUCTS.find(x=>String(x.id)===String(id)); if(!p) return;
   addToCart(p, p.sizes[0] || "50", 1);
 }
+function markCartUpdated(){
+  // Cart-abandonment automation reads this timestamp + the phone captured at
+  // checkout start; the actual "idle X hours, still unpaid" check runs on your
+  // n8n side on a schedule — this just keeps the live cart state visible to it.
+  localStorage.setItem("an_last_cart_update", new Date().toISOString());
+  const phone = localStorage.getItem("an_checkout_phone") || "";
+  if(cart.length > 0){
+    postWebhook(WEBHOOKS.cartAbandoned, {
+      event: "cart_update",
+      phone,
+      email: currentUser ? currentUser.email : null,
+      cart_items: cart,
+      last_cart_update: localStorage.getItem("an_last_cart_update")
+    });
+  }
+}
 function addToCart(p, size, qty){
   const existing = cart.find(c=>c.id===p.id && c.size===size);
   if(existing) existing.qty += qty;
   else cart.push({id:p.id,name:p.name,image:p.image,price:p.finalPrice,size,qty});
-  saveCart(); renderCartBadge(); renderCartDrawer(); toast(`${p.name} added to bag`);
+  saveCart(); renderCartBadge(); renderCartDrawer(); toast(`${p.name} added to bag`); markCartUpdated();
 }
-function updateQty(idx, delta){ cart[idx].qty+=delta; if(cart[idx].qty<=0) cart.splice(idx,1); saveCart(); renderCartBadge(); renderCartDrawer(); }
-function removeFromCart(idx){ cart.splice(idx,1); saveCart(); renderCartBadge(); renderCartDrawer(); }
+function updateQty(idx, delta){ cart[idx].qty+=delta; if(cart[idx].qty<=0) cart.splice(idx,1); saveCart(); renderCartBadge(); renderCartDrawer(); markCartUpdated(); }
+function removeFromCart(idx){ cart.splice(idx,1); saveCart(); renderCartBadge(); renderCartDrawer(); markCartUpdated(); }
 function cartSubtotal(){ return cart.reduce((s,c)=>s+c.price*c.qty,0); }
 function renderCartBadge(){ $("#cartBadge").textContent = cart.reduce((s,c)=>s+c.qty,0) || ""; }
 function renderCartDrawer(){
@@ -768,6 +785,12 @@ function renderCheckoutStep1(){
     $$('.pay-opt').forEach(x=>x.classList.remove("selected")); el.classList.add("selected");
     checkoutPaymentMethod = el.dataset.pay;
   }));
+  // Capture phone as soon as it's entered — not just on completed orders — so
+  // cart-abandonment tracking has it even if checkout is never finished.
+  $("#ckPhone").addEventListener("input", ()=>{
+    const val = $("#ckPhone").value.trim();
+    if(val) localStorage.setItem("an_checkout_phone", val);
+  });
   $("#placeOrderBtn").addEventListener("click", handlePlaceOrder);
 }
 
@@ -1086,6 +1109,19 @@ renderCartBadge();
 renderWishBadge();
 applyLanguage(currentLang);
 initConfig().then(()=>{ loadProducts(); handleStripeRedirect(); });
+
+// Best-effort abandoned-cart signal on tab close (your n8n schedule still owns
+// the real "idle X hours, unpaid" check — this just guarantees the last state
+// gets through even if the browser closes before another cart event fires).
+window.addEventListener("beforeunload", ()=>{
+  if(cart.length > 0){
+    const phone = localStorage.getItem("an_checkout_phone") || "";
+    navigator.sendBeacon && navigator.sendBeacon(WEBHOOKS.cartAbandoned, JSON.stringify({
+      event: "tab_close", phone, email: currentUser ? currentUser.email : null,
+      cart_items: cart, last_cart_update: localStorage.getItem("an_last_cart_update")
+    }));
+  }
+});
 </script>
 </body>
 </html>
